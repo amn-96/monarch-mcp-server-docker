@@ -1,17 +1,3 @@
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/robcerda-monarch-mcp-server-badge.png)](https://mseep.ai/app/robcerda-monarch-mcp-server)
-
-# Monarch Money MCP Server (Docker)
-
-A Model Context Protocol (MCP) server for integrating with the Monarch Money personal finance platform. This server provides seamless access to your financial accounts, transactions, budgets, and analytics through Claude Desktop.
-
-My MonarchMoney referral: https://www.monarchmoney.com/referral/ufmn0r83yf?r_source=share
-
-**Built with the [MonarchMoney Python library](https://github.com/hammem/monarchmoney) by [@hammem](https://github.com/hammem)** - A fantastic unofficial API for Monarch Money with full MFA support.
-
-<a href="https://glama.ai/mcp/servers/@robcerda/monarch-mcp-server">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@robcerda/monarch-mcp-server/badge" alt="monarch-mcp-server MCP server" />
-</a>
-
 ## 🚀 Quick Start (Docker)
 
 ### 1. Pull the Docker Image
@@ -182,6 +168,7 @@ For the original local Python instructions (non-docker), please consult the arch
 - [Original README](docs/ORIGINAL_README.md)
 
 ## 🙏 Acknowledgments
+This repo is simply a dockerized version of the [original Monarch Money MCP server](https://github.com/robcerda/monarch-mcp-server) created by [@robcerda](https://github.com/robcerda).
 
 This MCP server is built on top of the excellent [MonarchMoney Python library](https://github.com/hammem/monarchmoney) created by [@hammem](https://github.com/hammem). Their library provides the robust foundation that makes this integration possible, including:
 
