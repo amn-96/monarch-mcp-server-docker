@@ -14,8 +14,8 @@ services:
       - monarch-data:/app/data
     environment:
       - MCP_TRANSPORT=sse
-      - MCP_HOST=0.0.0.0
-      - MCP_PORT=8000
+      - FASTMCP_HOST=0.0.0.0
+      - FASTMCP_PORT=8000
     ports:
       - "8000:8000"
 

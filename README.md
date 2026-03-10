@@ -1,46 +1,39 @@
-## 🚀 Quick Start (Docker)
+## Quick Start (Docker)
 
 ### 1. Pull the Docker Image
-
-You can pull the pre-built image from the GitHub Container Registry (GHCR):
 
 ```bash
 docker compose pull
 ```
 
-*(Alternatively, you can build it yourself locally by running `docker compose build`)*
+To build the image locally instead: `docker compose build`
 
-### 2. One-Time Authentication Setup (MFA)
+### 2. Authenticate (One-Time Setup)
 
-**Important**: For security and MFA support, authentication is done interactively via Docker.
-
-Run the interactive setup via Docker to securely store the session token in a persistent volume:
+Run the interactive login script inside the container. This saves your session token to a persistent Docker volume so you won't need to log in again.
 
 ```bash
 docker compose run --rm -it --entrypoint "python login_setup.py" monarch-mcp
 ```
 
-Follow the prompts:
-- Answer `y` if you have MFA enabled
-- Enter your Monarch Money email and password
-- Provide 2FA code if you have MFA enabled
-- Session will be saved automatically to the `monarch-data` volume
+You will be prompted for:
+- Your Monarch Money email and password
+- Your 2FA code (if MFA is enabled)
 
-*(For fully detailed instructions on MFA with Docker, see the [Docker MFA Instructions](docs/DOCKER_MFA_INSTRUCTIONS.md))*
+For detailed MFA instructions, see [Docker MFA Instructions](docs/DOCKER_MFA_INSTRUCTIONS.md).
 
 ### 3. Configure Claude Desktop
 
-Add this to your Claude Desktop configuration file:
+Open your Claude Desktop config file:
 
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+Add the config block for the transport mode you want to use:
 
-Choose the config that matches how you're running the server:
+#### stdio (default — local use)
 
-#### stdio (default — local only)
-
-Claude Desktop spawns the container as a subprocess. No network port needed.
+Claude Desktop runs the container as a subprocess. No network port needed.
 
 ```json
 {
@@ -60,11 +53,11 @@ Claude Desktop spawns the container as a subprocess. No network port needed.
 }
 ```
 
-*(If using a locally built image, replace the image name with `monarch-mcp-server-docker-monarch-mcp`.)*
+If you built the image locally, replace the image name with `monarch-mcp-server-docker-monarch-mcp`.
 
 #### SSE (network — legacy)
 
-Run `docker compose up monarch-mcp-sse` first, then configure Claude Desktop to connect over HTTP:
+First start the server: `docker compose up monarch-mcp-sse`
 
 ```json
 {
@@ -78,7 +71,7 @@ Run `docker compose up monarch-mcp-sse` first, then configure Claude Desktop to 
 
 #### Streamable HTTP (network — recommended)
 
-Same as SSE but use `MCP_TRANSPORT=streamable-http` and the `/mcp` endpoint:
+First start the server with `MCP_TRANSPORT=streamable-http`, then use the `/mcp` endpoint:
 
 ```json
 {
@@ -89,10 +82,10 @@ Same as SSE but use `MCP_TRANSPORT=streamable-http` and the `/mcp` endpoint:
   }
 }
 ```
-   
-4. **Restart Claude Desktop**
 
-### 4. Start Using in Claude Desktop
+### 4. Restart Claude Desktop
+
+### 5. Start Using in Claude Desktop
 
 Once authenticated, use these tools directly in Claude Desktop:
 - `get_accounts` - View all your financial accounts
@@ -131,8 +124,8 @@ This server supports three transports:
 
 You can customize the transport, host, and port via environment variables:
 - `MCP_TRANSPORT` — `sse` or `streamable-http` (default: `stdio`)
-- `MCP_HOST` — bind address (default: `0.0.0.0`)
-- `MCP_PORT` — port number (default: `8000`)
+- `FASTMCP_HOST` — bind address (default: `0.0.0.0`)
+- `FASTMCP_PORT` — port number (default: `8000`)
 
 ## ✨ Features
 
