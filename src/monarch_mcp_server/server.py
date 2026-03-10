@@ -14,6 +14,10 @@ from mcp.server.auth.provider import AccessTokenT
 from mcp.server.fastmcp import FastMCP
 import mcp.types as types
 from monarchmoney import MonarchMoney, RequireMFAException
+# Monkey-patch Monarch API breaking change
+from monarchmoney.monarchmoney import MonarchMoneyEndpoints
+MonarchMoneyEndpoints.BASE_URL = "https://api.monarch.com"
+
 from pydantic import BaseModel, Field
 from monarch_mcp_server.secure_session import secure_session
 

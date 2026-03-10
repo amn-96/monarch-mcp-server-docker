@@ -1,0 +1,12 @@
+services:
+  monarch-mcp:
+    image: ghcr.io/amn-96/monarch-mcp-server-docker:latest
+    volumes:
+      # Persist the keyring credentials
+      - monarch-data:/app/data
+    # Required for interactive prompts if running interactive commands via compose up
+    stdin_open: true
+    tty: true
+
+volumes:
+  monarch-data:
