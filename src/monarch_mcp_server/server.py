@@ -10,7 +10,6 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 
 from dotenv import load_dotenv
-from mcp.server.auth.provider import AccessTokenT
 from mcp.server.fastmcp import FastMCP
 import mcp.types as types
 from monarchmoney import MonarchMoney, RequireMFAException
@@ -29,7 +28,7 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Initialize FastMCP server
-mcp = FastMCP("Monarch Money MCP Server")
+mcp = FastMCP("Monarch Money MCP Server", auth=None)
 
 
 def run_async(coro):
