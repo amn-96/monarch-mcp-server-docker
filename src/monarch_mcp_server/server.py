@@ -445,7 +445,15 @@ def main():
     """Main entry point for the server."""
     logger.info("Starting Monarch Money MCP Server...")
     try:
-        mcp.run()
+        transport = os.getenv("MCP_TRANSPORT", "stdio")
+        host = os.getenv("MCP_HOST", "0.0.0.0")
+        port = int(os.getenv("MCP_PORT", "8000"))
+
+        if transport in ("sse", "streamable-http"):
+            logger.info(f"Starting with {transport} transport on {host}:{port}")
+            mcp.run(transport=transport, host=host, port=port)
+        else:
+            mcp.run()
     except Exception as e:
         logger.error(f"Failed to run server: {str(e)}")
         raise

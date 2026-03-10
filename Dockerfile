@@ -23,5 +23,7 @@ ENV XDG_DATA_HOME=/app/data
 # Ensure the data directory exists
 RUN mkdir -p /app/data
 
+EXPOSE 8000
+
 # Default entrypoint to the MCP server
 ENTRYPOINT ["monarch-mcp-server"]

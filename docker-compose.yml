@@ -8,5 +8,16 @@ services:
     stdin_open: true
     tty: true
 
+  monarch-mcp-sse:
+    image: ghcr.io/amn-96/monarch-mcp-server-docker:latest
+    volumes:
+      - monarch-data:/app/data
+    environment:
+      - MCP_TRANSPORT=sse
+      - MCP_HOST=0.0.0.0
+      - MCP_PORT=8000
+    ports:
+      - "8000:8000"
+
 volumes:
   monarch-data:

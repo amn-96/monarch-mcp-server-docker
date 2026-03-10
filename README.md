@@ -31,11 +31,17 @@ Follow the prompts:
 ### 3. Configure Claude Desktop
 
 Add this to your Claude Desktop configuration file:
-   
+
 **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   
+
 **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-   
+
+Choose the config that matches how you're running the server:
+
+#### stdio (default — local only)
+
+Claude Desktop spawns the container as a subprocess. No network port needed.
+
 ```json
 {
   "mcpServers": {
@@ -47,14 +53,42 @@ Add this to your Claude Desktop configuration file:
         "--rm",
         "--volume",
         "monarch-data:/app/data",
-        "ghcr.io/robcerda/monarch-mcp-server-docker:latest"
+        "ghcr.io/amn-96/monarch-mcp-server-docker:latest"
       ]
     }
   }
 }
 ```
 
-*(Note: Replace the image name `ghcr.io/robcerda/monarch-mcp-server-docker:latest` with your local image name `monarch-mcp-server-docker-monarch-mcp` if you are only running it locally and not using the published image.)*
+*(If using a locally built image, replace the image name with `monarch-mcp-server-docker-monarch-mcp`.)*
+
+#### SSE (network — legacy)
+
+Run `docker compose up monarch-mcp-sse` first, then configure Claude Desktop to connect over HTTP:
+
+```json
+{
+  "mcpServers": {
+    "Monarch Money": {
+      "url": "http://your-server-ip:8000/sse"
+    }
+  }
+}
+```
+
+#### Streamable HTTP (network — recommended)
+
+Same as SSE but use `MCP_TRANSPORT=streamable-http` and the `/mcp` endpoint:
+
+```json
+{
+  "mcpServers": {
+    "Monarch Money": {
+      "url": "http://your-server-ip:8000/mcp"
+    }
+  }
+}
+```
    
 4. **Restart Claude Desktop**
 
@@ -65,6 +99,40 @@ Once authenticated, use these tools directly in Claude Desktop:
 - `get_transactions` - Recent transactions with filtering
 - `get_budgets` - Budget information and spending
 - `get_cashflow` - Income/expense analysis
+
+## ⚠️ SECURITY WARNING: Network Exposure
+
+**DO NOT expose this server to the public internet unless you know exactly what you are doing.**
+
+When running in SSE mode, the server:
+- Has **no authentication** — anyone who can reach the port can query your financial data
+- Serves your Monarch Money session token over the network
+- The keyring backend uses a **plaintext file** (`keyrings.alt`) inside the container
+
+Safe usage: bind to `127.0.0.1` (localhost only) or a private LAN interface, and use a firewall or VPN to restrict access. Never bind to `0.0.0.0` on a machine with a public IP without a reverse proxy that handles authentication (e.g., nginx + basic auth + TLS).
+
+## Remote Access (Network Transports)
+
+To run the server over a network, use the `monarch-mcp-sse` service (supports both `sse` and `streamable-http`):
+
+```bash
+docker compose up monarch-mcp-sse
+```
+
+The server will listen on port 8000. See step 3 of Quick Start above for the Claude Desktop config for each transport mode.
+
+This server supports three transports:
+
+| Transport | How to use | Use case |
+|-----------|------------|----------|
+| `stdio` | Claude Desktop spawns the container as a subprocess | Default; local use only |
+| `sse` | HTTP + Server-Sent Events; Claude connects to `/sse` | Network access (legacy) |
+| `streamable-http` | HTTP streaming; Claude connects to `/mcp` | Network access (recommended) |
+
+You can customize the transport, host, and port via environment variables:
+- `MCP_TRANSPORT` — `sse` or `streamable-http` (default: `stdio`)
+- `MCP_HOST` — bind address (default: `0.0.0.0`)
+- `MCP_PORT` — port number (default: `8000`)
 
 ## ✨ Features
 
